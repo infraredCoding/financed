@@ -104,93 +104,72 @@
             </tr>
           </thead>
           <tbody>
+          {% for transaction in transactions %}
             <tr>
               <td>
                 <div class="d-flex px-2 py-1">
                   <div>
+                  {% if transaction.5 == 'income' %}
                     <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
+                  {% elif transaction.5 == 'expense' %}
+                   <button class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-down"></i></button>
+                  {% endif %}
                   </div>
                   <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">nigga</h6>
-                    <p class="text-xs text-secondary mb-0">23 Aug, 2023</p>
+                    <h6 class="mb-0 text-sm">{{ transaction.1 }}</h6>
+                    <p class="text-xs text-secondary mb-0">{{ transaction.2 }}</p>
                   </div>
                 </div>
               </td>
               <td>
-                <p class="text-xs font-weight-bold mb-0">bKash</p>
+                <p class="text-xs font-weight-bold mb-0">{{ transaction.7 }}</p>
               </td>
               <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-success">Income</span>
+                  {% if transaction.5 == 'income' %}
+                    <span class="badge badge-sm bg-gradient-success">{{ transaction.5 }}</span>
+                  {% elif transaction.5 == 'expense' %}
+                    <span class="badge badge-sm bg-gradient-danger">{{ transaction.5 }}</span>
+                  {% endif %}
               </td>
               <td class="align-middle text-center">
-                <span class="text-success text-gradient text-sm font-weight-bold">
-                    + $ 1,000
-                </span>
+              {% if transaction.5 == 'income' %}
+                  <span class="text-success text-gradient text-sm font-weight-bold">+{{ transaction.3 }}</span>
+              {% elif transaction.5 == 'expense' %}
+                    <span class="text-danger text-gradient text-sm font-weight-bold">-{{ transaction.3 }}</span>
+              {% endif %}
+
               </td>
               <td class="align-middle">
-                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                  Edit
-                </a>
+                  <button class="btn btn-link text-danger text-gradient px-3 mb-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#del-transaction-popup{{ transaction.0 }}">
+                    <i class="far fa-trash-alt me-2"></i>Delete
+                  </button>
               </td>
             </tr>
-            <tr>
-              <td>
-                <div class="d-flex px-2 py-1">
-                  <div>
-                    <button class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-down"></i></button>
+
+              <div class="modal fade" id="del-transaction-popup{{ transaction.0 }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-body p-0">
+            <div class="card card-plain">
+              <div class="card-header pb-0 text-left">
+                <h3 class="font-weight-bolder text-info text-gradient">Are you sure you want to delete the selected transaction</h3>
+              </div>
+              <div class="card-body">
+                <form role="form text-left" method="post" action="{{ url_for('delete_transaction', t_id=transaction.0) }}">
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-round bg-gradient-danger btn-lg w-100 mt-4 mb-0">Yes, Delete it</button>
                   </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                    <p class="text-xs text-secondary mb-0">alexa@creative-tim.com</p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p class="text-xs font-weight-bold mb-0">Eeastern Bank Ltd</p>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-danger">Offline</span>
-              </td>
-              <td class="align-middle text-center">
-                <span class="text-danger text-gradient text-sm font-weight-bold">
-                    - $ 1,000
-                </span>
-              </td>
-              <td class="align-middle">
-                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                  Edit
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="d-flex px-2 py-1">
-                  <div>
-                    <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                    <p class="text-xs text-secondary mb-0">laurent@creative-tim.com</p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p class="text-xs font-weight-bold mb-0">Cash</p>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm bg-gradient-success">Income</span>
-              </td>
-              <td class="align-middle text-center">
-                  <span class="text-success text-gradient text-sm font-weight-bold">
-                    + $ 1,000
-                  </span>
-              </td>
-              <td class="align-middle">
-                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                  Edit
-                </a>
-              </td>
-            </tr>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+          {% endfor %}
+
           </tbody>
         </table>
       </div>
@@ -206,33 +185,47 @@
           <div class="modal-body p-0">
             <div class="card card-plain">
               <div class="card-header pb-0 text-left">
-                <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
-                <p class="mb-0">Enter your email and password to sign in</p>
+                <h3 class="font-weight-bolder text-info text-gradient">Add Transaction</h3>
               </div>
               <div class="card-body">
-                <form role="form text-left">
-                  <label>Email</label>
+                <form role="form text-left" method="post">
+                  <label>Title</label>
                   <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                    <input type="text" name="title" class="form-control" placeholder="Title" aria-label="title" aria-describedby="title-addon">
                   </div>
-                  <label>Password</label>
+                    <label>Amount</label>
                   <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                    <input type="text" name="amount" class="form-control" placeholder="Amount" aria-label="amount" aria-describedby="amount-addon">
                   </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
-                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                    <label>Type</label>
+                  <div class="input-group mb-3">
+                    <select class="form-control" name="type">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
                   </div>
+                    <label>Category</label>
+                  <div class="input-group mb-3">
+                    <input type="text" name="category" class="form-control" placeholder="Category" aria-label="Category" aria-describedby="Category-addon">
+                  </div>
+                  <label>Date</label>
+                  <div class="input-group mb-3">
+                    <input type="date" name="date" class="form-control" placeholder="Date" aria-label="date" aria-describedby="date-addon">
+                  </div>
+                    <label>Account</label>
+                  <div class="input-group mb-3">
+                      <select class="form-control" name="account_id">
+                            <option value="" selected>Select Account</option>
+                          {% for account in accounts %}
+                          	<option value="{{ account.0 }}">{{ account.1 }}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+
                   <div class="text-center">
-                    <button type="button" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Sign in</button>
+                    <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Add Transaction</button>
                   </div>
                 </form>
-              </div>
-              <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                <p class="mb-4 text-sm mx-auto">
-                  Don't have an account?
-                  <a href="javascript:;" class="text-info text-gradient font-weight-bold">Sign up</a>
-                </p>
               </div>
             </div>
           </div>

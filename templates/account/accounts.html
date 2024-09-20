@@ -9,7 +9,7 @@
             <div class="card-header pb-0 px-3">
                 <div class="d-flex justify-content-between">
                     <h6 class="mb-0">Your Accounts</h6>
-                    <button class="btn bg-gradient-success btn-sm my-auto" data-bs-toggle="modal" data-bs-target="#add-transaction-popup">
+                    <button class="btn bg-gradient-success btn-sm my-auto" data-bs-toggle="modal" data-bs-target="#add-account-popup">
                         <i class="ni ni-fat-add text-2xl"></i>
                         <span class="text-sm">Add Account</span>
                     </button>
@@ -18,46 +18,236 @@
             </div>
             <div class="card-body pt-4 p-3">
               <ul class="list-group">
+                {% for account in accounts %}
                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <div class="d-flex flex-column">
-                    <h6 class="mb-3 text-sm">Some Bank Account</h6>
-                    <span class="mb-2 text-xs">Bank Name: <span class="text-dark font-weight-bold ms-sm-2">Hehe Bank LTD</span></span>
-                    <span class="mb-2 text-xs">Acc No: <span class="text-dark ms-sm-2 font-weight-bold">432234423456126743</span></span>
-                    <span class="mb-2 text-xs">Branch Name: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
-                    <span class="text-xs">Current Balance: <span class="text-dark ms-sm-2 font-weight-bold">$20,000</span></span>
+                    <h6 class="mb-3 text-sm">
+                        {{ account.1 }}
+                        {% if account.2 == 'bank' %}
+                            <span class="badge bg-gradient-primary">Bank</span>
+                        {% elif account.2 == 'cash' %}
+                            <span class="badge bg-gradient-success">Cash</span>
+                        {% else %}
+                            <span class="badge bg-gradient-danger">Wallet</span>
+                        {% endif %}
+                    </h6>
+                    {% if account.2 == 'bank' %}
+                        <span class="mb-2 text-xs">Bank Name: <span class="text-dark font-weight-bold ms-sm-2">{{ account.6 }}</span></span>
+                        <span class="mb-2 text-xs">Acc No: <span class="text-dark ms-sm-2 font-weight-bold">{{ account.5 }}</span></span>
+                        <span class="mb-2 text-xs">Branch Name: <span class="text-dark ms-sm-2 font-weight-bold">{{ account.7 }}</span></span>
+                    {% elif account.2 == 'wallet' %}
+                        <span class="mb-2 text-xs">Phone: <span class="text-dark font-weight-bold ms-sm-2">{{ account.9 }}</span></span>
+                        <span class="mb-2 text-xs">Wallet Name: <span class="text-dark ms-sm-2 font-weight-bold">{{ account.10 }}</span></span>
+                    {% endif %}
+                    <span class="text-xs">Current Balance: <span class="text-dark ms-sm-2 font-weight-bold">{{ account.3 }}</span></span>
                   </div>
                   <div class="ms-auto text-end">
-                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                    <button class="btn btn-link text-danger text-gradient px-3 mb-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#del-account-popup{{ account.0 }}">
+                        <i class="far fa-trash-alt me-2"></i>Delete
+                    </button>
+                    <button class="btn btn-link text-dark px-3 mb-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#edit-account-popup{{ account.0 }}">
+                        <i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit
+                    </button>
                   </div>
                 </li>
-                <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-                  <div class="d-flex flex-column">
-                    <h6 class="mb-3 text-sm">Lucas Harper</h6>
-                    <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Stone Tech Zone</span></span>
-                    <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
-                    <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+
+                    <div class="modal fade" id="del-account-popup{{ account.0 }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body p-0">
+                            <div class="card card-plain">
+                              <div class="card-header pb-0 text-left">
+                                <h3 class="font-weight-bolder text-info text-gradient">Add new Account</h3>
+                              </div>
+                              <div class="card-body">
+                                <form role="form text-left" action="{{ url_for('delete_account', acc_id=account.0) }}" method="post">
+                                  <h6>Are you sure you want to delete {{ account.1 }}?</h6>
+                                  <div class="text-center">
+                                    <button type="submit" class="btn btn-round bg-gradient-danger btn-lg w-100 mt-4 mb-0">Yes, Delete it</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="modal fade" id="edit-account-popup{{ account.0 }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body p-0">
+                        <div class="card card-plain">
+                          <div class="card-header pb-0 text-left">
+                            <h3 class="font-weight-bolder text-info text-gradient">Edit Account</h3>
+                          </div>
+                          <div class="card-body">
+                            <form role="form text-left" method="post" action="{{ url_for('edit_account', acc_id=account.0) }}">
+                              <label>Title</label>
+                              <div class="input-group mb-3">
+                                <input type="text" name="title" value="{{ account.1 }}" class="form-control" placeholder="Title" aria-label="title" aria-describedby="title-addon">
+                              </div>
+
+                              <label>Type</label>
+                              <div class="input-group mb-3">
+                                <input type="text" readonly name="type" value="{{ account.2 }}" class="form-control" aria-label="title" aria-describedby="title-addon">
+                              </div>
+
+                                {% if account.2 == 'bank' %}
+
+                                  <label class="">Bank Account No.</label>
+                                  <div class=" input-group mb-3">
+                                    <input type="text" name="b-acc-no" class="form-control" value="{{ account.5 }}" aria-label="b-acc-no" aria-describedby="b-acc-no-addon">
+                                  </div>
+
+                                    <label class="">Bank Name</label>
+                                  <div class=" input-group mb-3">
+                                    <input type="text" name="b-name" class="form-control" value="{{ account.6 }}" aria-label="b-name" aria-describedby="b-name-addon">
+                                  </div>
+
+                                    <label class="">Branch Name</label>
+                                  <div class=" input-group mb-3">
+                                    <input type="text" name="b-branch" class="form-control" value="{{ account.7 }}" aria-label="b-branch" aria-describedby="b-branch-addon">
+                                  </div>
+                                {% elif account.2 == 'wallet' %}
+
+                                      <label class="">Phone No.</label>
+                                  <div class=" input-group mb-3">
+                                    <input type="text" name="w-phone" class="form-control" value="{{ account.9 }}" aria-label="w-phone" aria-describedby="w-phone-addon">
+                                  </div>
+
+                                      <label class="">Wallet Type</label>
+                                  <div class="w-only input-group mb-3">
+                                    <input type="text" name="w-type" class="form-control" value="{{ account.10 }}" aria-label="w-type" aria-describedby="w-type-addon">
+                                  </div>
+                                {% endif %}
+                              <div class="text-center">
+                                <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Save Changes</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="ms-auto text-end">
-                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-                  <div class="d-flex flex-column">
-                    <h6 class="mb-3 text-sm">Ethan James</h6>
-                    <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Fiber Notion</span></span>
-                    <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
-                    <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
-                  </div>
-                  <div class="ms-auto text-end">
-                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
-                    <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                  </div>
-                </li>
+                </div>
+                {% endfor %}
               </ul>
             </div>
           </div>
         </div>
       </div>
+
+<div class="modal fade" id="add-account-popup" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-body p-0">
+            <div class="card card-plain">
+              <div class="card-header pb-0 text-left">
+                <h3 class="font-weight-bolder text-info text-gradient">Add new Account</h3>
+              </div>
+              <div class="card-body">
+                <form role="form text-left" method="post">
+                  <label>Title</label>
+                  <div class="input-group mb-3">
+                    <input type="text" name="title" class="form-control" placeholder="Title" aria-label="title" aria-describedby="title-addon">
+                  </div>
+
+                  <label>Type</label>
+                  <div class="input-group mb-3">
+                    <select class="form-control" id="acc-type-holder" name="type">
+                        <option value="" selected>Select Account Type</option>
+                      <option value="bank">Bank Account</option>
+                      <option value="cash">Cash</option>
+                      <option value="wallet">Wallet</option>
+                    </select>
+                  </div>
+
+                    <label>Initial Balance</label>
+                  <div class="input-group mb-3">
+                    <input type="text" name="balance" value="0.0" class="form-control" placeholder="Initial Balance" aria-label="balance" aria-describedby="balance-addon">
+                  </div>
+
+                  <label class="b-only d-none">Bank Account No.</label>
+                  <div class="b-only d-none input-group mb-3">
+                    <input type="text" name="b-acc-no" class="form-control" placeholder="Acc No." aria-label="b-acc-no" aria-describedby="b-acc-no-addon">
+                  </div>
+
+                    <label class="b-only d-none">Bank Name</label>
+                  <div class="b-only d-none input-group mb-3">
+                    <input type="text" name="b-name" class="form-control" placeholder="Bank Name" aria-label="b-name" aria-describedby="b-name-addon">
+                  </div>
+
+                    <label class="b-only d-none">Branch Name</label>
+                  <div class="b-only d-none input-group mb-3">
+                    <input type="text" name="b-branch" class="form-control" placeholder="Branch" aria-label="b-branch" aria-describedby="b-branch-addon">
+                  </div>
+
+                      <label class="w-only d-none">Phone No.</label>
+                  <div class="w-only d-none input-group mb-3">
+                    <input type="text" name="w-phone" class="form-control" placeholder="Phone" aria-label="w-phone" aria-describedby="w-phone-addon">
+                  </div>
+
+                      <label class="w-only d-none">Wallet Type</label>
+                  <div class="w-only d-none input-group mb-3">
+                    <input type="text" name="w-type" class="form-control" placeholder="Type" aria-label="w-type" aria-describedby="w-type-addon">
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Create Account</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const accTypeHolder = document.querySelector('#acc-type-holder')
+        accTypeHolder.addEventListener('change', (e) => {
+            const selectedValue = e.target.value;
+
+            if (selectedValue == 'bank'){
+                const w_only = document.querySelectorAll('.w-only')
+
+                w_only.forEach((btn) => {
+                    btn.classList.add('d-none')
+                })
+
+                const b_only = document.querySelectorAll('.b-only')
+
+                b_only.forEach((btn) => {
+                    btn.classList.remove('d-none')
+                })
+            }else if (selectedValue == 'wallet'){
+                const b_only = document.querySelectorAll('.b-only')
+
+                b_only.forEach((btn) => {
+                    btn.classList.add('d-none')
+                })
+                const w_only = document.querySelectorAll('.w-only')
+
+                w_only.forEach((btn) => {
+                    btn.classList.remove('d-none')
+                })
+            }else {
+                const b_only = document.querySelectorAll('.b-only')
+
+                b_only.forEach((btn) => {
+                    btn.classList.add('d-none')
+                })
+                const w_only = document.querySelectorAll('.w-only')
+
+                w_only.forEach((btn) => {
+                    btn.classList.add('d-none')
+                })
+            }
+        })
+    </script>
 {% endblock %}
