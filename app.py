@@ -405,7 +405,7 @@ def accounts_view():
             # cursor = mysql.connection.cursor()
 
             cursor.execute("""
-                INSERT INTO BankAccount (account_number, bank_name, branch_name, account_id) values (%s, %s, %s)
+                INSERT INTO BankAccount (account_number, bank_name, branch_name, account_id) values (%s, %s, %s, %s)
                     """, (acc_no, name, branch, last_account_id))
             mysql.connection.commit()
             cursor.close()
