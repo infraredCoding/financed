@@ -344,9 +344,11 @@ def transactions_view():
 
     acc_list = cursor.fetchall()
 
+    templates_with_index = [(i, template) for i, template in enumerate(templates)]
+
     cursor.close()
     return render_template(
-        'transactions/transactions.html', transactions=data, accounts=acc_list, templates=templates,
+        'transactions/transactions.html', transactions=data, accounts=acc_list, templates=templates_with_index,
         summary=summary
     )
 
